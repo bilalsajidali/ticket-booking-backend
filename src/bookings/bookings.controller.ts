@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Query } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -23,7 +23,7 @@ export class BookingsController {
   // Get all bookings for the logged-in user
   @Get()
   @Roles('user')
-  findUserBookings(@Body('userId') userId: number) {
+  findUserBookings(@Query('userId') userId: number) {
     return this.bookingsService.findUserBookings(userId);
   }
 }

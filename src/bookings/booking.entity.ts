@@ -13,8 +13,11 @@ export class Booking {
   @ManyToOne(() => Event, (event) => event.bookings)
   event: Event;
 
-  @Column()
+  @Column({ type: 'int', default: 1 })
   quantity: number;
+
+  @Column()
+  eventId: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
