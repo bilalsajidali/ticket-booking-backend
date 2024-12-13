@@ -15,8 +15,11 @@ export class Event {
   @Column()
   date: Date;
 
-  @Column()
+  @Column({nullable:true})
   price: number;
+
+  @Column({nullable:true})
+  imageUrl: string;
 
   @Column()
   location: string;

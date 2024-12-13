@@ -39,8 +39,12 @@ export class BookingsService {
     return this.bookingRepository.save(booking);
   }
 
-  // Get all bookings for a user
-  async findUserBookings(userId: number): Promise<Booking[]> {
-    return this.bookingRepository.find({ where: { user: { id: userId } } });
-  }
+  // Get all bookings for a user with event details
+async findUserBookings(userId: number): Promise<Booking[]> {
+  return this.bookingRepository
+    .createQueryBuilder('booking')
+    .leftJoinAndSelect('booking.event', 'event') 
+    .where('booking.userId = :userId', { userId }) 
+    .getMany();
+}
 }

@@ -44,7 +44,7 @@ export class EventsController {
   // Delete an event (only admin)
   @Delete(':id')
   @Roles('admin')
-  remove(@Param('id') id: number): Promise<void> {
+  remove(@Param('id') id: number): Promise<{msg:string}> {
     return this.eventsService.remove(id);
   }
 }
