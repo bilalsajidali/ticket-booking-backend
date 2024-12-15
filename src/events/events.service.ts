@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Event } from './event.entity';
@@ -14,36 +14,70 @@ export class EventsService {
   ) {}
 
   // Create a new event
-  create(createEventDto: Partial<Event>): Promise<Event> {
+  async create(createEventDto: Partial<Event>): Promise<Event> {
     const event = this.eventRepository.create(createEventDto);
-    return this.eventRepository.save(event);
+
+    try {
+      return await this.eventRepository.save(event);
+    } catch (error) {
+      throw new BadRequestException('Could not create the event. Please check the input and try again.');
+    }
   }
 
   // Get all events
-  findAll(): Promise<Event[]> {
-    return this.eventRepository.find();
+  async findAll(): Promise<Event[]> {
+    try {
+      return await this.eventRepository.find();
+    } catch (error) {
+      throw new BadRequestException('Could not retrieve events. Please try again.');
+    }
   }
 
   // Get a single event by ID
-  findOne(id: number): Promise<Event> {
-    return this.eventRepository.findOneBy({ id });
+  async findOne(id: number): Promise<Event> {
+    const event = await this.eventRepository.findOneBy({ id });
+
+    if (!event) {
+      throw new NotFoundException(`Event with ID ${id} not found`);
+    }
+
+    return event;
   }
 
   // Update an event
   async update(id: number, updateEventDto: Partial<Event>): Promise<Event> {
-    await this.eventRepository.update(id, updateEventDto);
-    return this.eventRepository.findOneBy({ id });
+    const event = await this.eventRepository.findOneBy({ id });
+
+    if (!event) {
+      throw new NotFoundException(`Event with ID ${id} not found`);
+    }
+
+    try {
+      await this.eventRepository.update(id, updateEventDto);
+      return await this.eventRepository.findOneBy({ id });
+    } catch (error) {
+      throw new BadRequestException('Could not update the event. Please check the input and try again.');
+    }
   }
 
   // Delete an event
-  async remove(id: number): Promise<{msg:string}> {
-    // Delete all bookings related to this event
-    await this.bookingRepository.delete({ eventId: id });
+  async remove(id: number): Promise<{ msg: string }> {
+    const event = await this.eventRepository.findOneBy({ id });
 
-    // Then delete the event itself
-    await this.eventRepository.delete(id);
-    // Return a message indicating successful deletion
-    return { msg: `Event with ID ${id} and all its associated bookings have been deleted.` };
+    if (!event) {
+      throw new NotFoundException(`Event with ID ${id} not found`);
+    }
 
+    try {
+      // Delete all bookings related to this event
+      await this.bookingRepository.delete({ eventId: id });
+
+      // Then delete the event itself
+      await this.eventRepository.delete(id);
+
+      return { msg: `Event with ID ${id} and all its associated bookings have been deleted.` };
+    } catch (error) {
+      throw new BadRequestException('Could not delete the event. Please try again.');
+    }
   }
 }
