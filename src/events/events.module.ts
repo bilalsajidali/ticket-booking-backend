@@ -6,7 +6,7 @@ import { Event } from './event.entity';
 import { Booking } from 'src/bookings/booking.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Event,Booking])], // Ensure Event is added here
+  imports: [TypeOrmModule.forFeature([Event,Booking])],
   providers: [EventsService],
   controllers: [EventsController]
 })

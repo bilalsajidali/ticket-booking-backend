@@ -66,8 +66,8 @@ export class BookingsService {
     try {
       return await this.bookingRepository
         .createQueryBuilder('booking')
-        .leftJoinAndSelect('booking.event', 'event') // Include event details
-        .where('booking.userId = :userId', { userId }) // Filter by userId
+        .leftJoinAndSelect('booking.event', 'event') 
+        .where('booking.userId = :userId', { userId }) 
         .getMany();
     } catch (error) {
       // If any unexpected error occurs

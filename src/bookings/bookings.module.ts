@@ -7,7 +7,7 @@ import { Event } from 'src/events/event.entity';
 import { User } from 'src/auth/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Booking,Event,User])], // Ensure Event is added here
+  imports: [TypeOrmModule.forFeature([Booking,Event,User])],
   providers: [BookingsService],
   controllers: [BookingsController]
 })

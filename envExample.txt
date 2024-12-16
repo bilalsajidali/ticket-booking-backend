@@ -4,3 +4,4 @@ DB_USERNAME=root
 DB_PASSWORD=password
 DB_NAME=ticket_booking
 JWT_SECRET=bilalsecretkey
+PORT = 5000
